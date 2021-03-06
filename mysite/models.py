@@ -1,5 +1,7 @@
 from django.db import models
-from django.template.defaultfilters import slugify
+from django.utils.text import slugify
+from django.contrib.auth.models import User
+# from django.conf import settings
 
 
 class Task(models.Model):
@@ -8,21 +10,23 @@ class Task(models.Model):
         ('undone', 'UnDone'),
     )
 
-    REMINDER_DAYS = (
-        (1, 'one day earlier'),
-        (2, 'two days earlier'),
-        (3, 'three days earlier'),
-        (7, 'a weak earlier'),
-        (30, 'a month earlier'),
-    )
+    # REMINDER_DAYS = (
+    #     (1, 'one day earlier'),
+    #     (2, 'two days earlier'),
+    #     (3, 'three days earlier'),
+    #     (7, 'a weak earlier'),
+    #     (30, 'a month earlier'),
+    # )
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='User', related_name='user_tasks')
     title = models.CharField(max_length=120, verbose_name='Task Title')
     slug = models.SlugField(max_length=100, unique=True, allow_unicode=True, verbose_name='Slug')
-    description = models.TextField(max_length=200, verbose_name='Task description')
+    description = models.TextField(max_length=200, verbose_name='Task description', blank=True, null=True)
     deadline_date = models.DateTimeField(verbose_name='Deadline')
     date_edited = models.DateTimeField(auto_now=True, verbose_name='Update Date')
     status = models.CharField(max_length=10, verbose_name='Task Status', choices=TASK_STATUS, default='undone')
-    reminder = models.SmallIntegerField(choices=REMINDER_DAYS)
+    # reminder = models.SmallIntegerField(choices=REMINDER_DAYS, default=1)
+    reminder = models.DateTimeField(verbose_name='reminder')
 
     class Meta:
         verbose_name_plural = 'Tasks'
