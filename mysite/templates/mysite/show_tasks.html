@@ -14,4 +14,21 @@
         </div>
       </div>
     {% endfor %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="alert alert-danger" role="alert">
+                      {{ message }}
+                    </div>
+                {% endif %}
+
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success" role="alert" style="width:400px">
+                      {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock%}

@@ -19,11 +19,11 @@
       </li>
       {% if not request.user.is_authenticated %}
           <li class="nav-item active">
-            <a class="nav-link" href="#">login</a>
+            <a class="nav-link" href="{% url 'members:login'%}">login</a>
           </li>
       {% else %}
             <li class="nav-item active">
-            <a class="nav-link" href="#">logout</a>
+            <a class="nav-link" href="{% url 'members:logout' %}">logout</a>
           </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

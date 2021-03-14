@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     'mysite.apps.MysiteConfig',
 ]
 
+LOGOUT_REDIRECT_URL = 'mysite:home'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
