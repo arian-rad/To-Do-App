@@ -1,9 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
+
+
+{% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="alert alert-danger" role="alert">
+                      {{ message }}
+                    </div>
+                {% endif %}
+
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success" role="alert" style="width:400px">
+                      {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+
+
     <form method='POST'>
     {% csrf_token %}
-
-
         <div class="container m-5"  style="width: 60rem;">
         <div class="card border border-secondary">
           <div class="card-body m-5">
@@ -26,11 +47,7 @@
           </div>
         </div>
       </div>
-
-
-
-
-
-
     </form>
+
+
 {% endblock %}

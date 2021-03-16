@@ -5,6 +5,8 @@ from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
@@ -35,7 +37,6 @@ class TaskCreateView(CreateView):
 class TaskUpdateView(UpdateView):
     model = Task
     form_class = TaskUpdateForm
-    # fields = ('title', 'deadline_date', 'reminder', 'status', 'description',)
     template_name = 'mysite/edit_task.html'
     success_url = reverse_lazy('mysite:show-all-tasks')
 
@@ -52,17 +53,24 @@ class TaskUpdateView(UpdateView):
             print("status is:", 'status' in request.POST)
             print("cd_status:", cd['status'])
 
+            if cd['reminder']:
+                if cd['reminder'] > cd['deadline_date']:
+                    messages.error(request, "Reminder date can't be after deadline! ")
+                    return HttpResponseRedirect(reverse('mysite:edit-task', args=(kwargs['slug'], (kwargs['pk']))))
+
             updated_task = Task.objects.get(id=kwargs['pk'])
             # if 'status' in request.POST:
             #     cd['status'] = True
             updated_task.status = cd['status']
-            # updated_task.status = cd['status']
             print('update status is: ', updated_task.status)
 
             updated_task.save()
             self.object.refresh_from_db()
 
             return redirect('mysite:show-all-tasks')
+        else:
+            messages.error(request, "You have to specify a deadline for your task")
+            return HttpResponseRedirect(reverse('mysite:edit-task', args=(kwargs['slug'], (kwargs['pk']))))
 
 
 class TaskListView(ListView):

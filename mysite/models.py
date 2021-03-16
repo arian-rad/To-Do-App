@@ -27,7 +27,7 @@ class Task(models.Model):
     # status = models.CharField(max_length=10, verbose_name='Task Status', choices=TASK_STATUS, default='undone')
     status = models.BooleanField(verbose_name='Task Status', default=False)
     # reminder = models.SmallIntegerField(choices=REMINDER_DAYS, default=1)
-    reminder = models.DateTimeField(verbose_name='reminder')
+    reminder = models.DateTimeField(verbose_name='reminder', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Tasks'
