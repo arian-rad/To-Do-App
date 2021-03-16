@@ -9,7 +9,7 @@ class DateInput(forms.DateInput):
 class TaskCreationForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ('title', 'deadline_date', 'description', 'reminder')
+        fields = ('title', 'deadline_date', 'description', 'reminder',)
         labels = {
             'reminder': 'remind me'
         }
@@ -18,4 +18,20 @@ class TaskCreationForm(forms.ModelForm):
             'deadline_date': DateInput(),
             'reminder': DateInput(),
             'description': forms.Textarea(attrs={'cols': 80, 'rows': 5})
+        }
+
+
+class TaskUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ('title', 'deadline_date', 'description', 'reminder', 'status')
+        labels = {
+            'reminder': 'remind me'
+        }
+
+        widgets = {
+            'deadline_date': DateInput(),
+            'reminder': DateInput(),
+            'description': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
+            'status': forms.CheckboxInput()
         }

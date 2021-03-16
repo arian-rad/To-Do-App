@@ -2,17 +2,53 @@
 
 {% block content %}
     {% for task in object_list %}
-      <div class="container m-5"  style="width: 40rem;">
-        <div class="card">
-          <div class="card-body">
+<!--      <div class="container m-5"  style="width: 40rem;">-->
+<!--        <div class="card">-->
+<!--          <div class="card-body">-->
+<!--              <h1>{{task.title}}</h1>-->
+<!--              <p>{{task.deadline_date}}</p>-->
+<!--              <br>-->
+<!--              <time>{{task.reminder}}</time>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-              <h1>{{task.title}}</h1>
-              <p>{{task.deadline_date}}</p>
-              <br>
-              <time>{{task.reminder}}</time>
-          </div>
-        </div>
+<div class="row m-5">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{task.title}}</h5>
+          <p class="card-text">Dead Line: {{task.deadline_date}}</p>
+          <time class="card-text">Reminder: {{task.reminder}}</time>
+          <br>
+          {% if task.status == 'true' %}
+            <span>Done: <input class="m-3" type="checkbox" name="status" checked></span>
+          {% else %}
+            <span>Done: <input class="m-3" type="checkbox" name="status"></span>
+          {% endif %}
+
+
+          <a class="btn btn-primary m-2" style="float:right;" href="{% url 'mysite:edit-task' task.slug task.id %}" type="submit"> edit</a>
       </div>
+    </div>
+  </div>
+  <div class="col-lg-4 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-body">
+        {% if task.description %}
+            <h5>Description:</h5>
+            <p class="card-title">{{task.description}}</p>
+        {% else%}
+          <h5 class="card-title text-muted">No Description</h5>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
     {% endfor %}
     {% if messages %}
         <ul class="messages">

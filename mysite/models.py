@@ -24,7 +24,8 @@ class Task(models.Model):
     description = models.TextField(max_length=200, verbose_name='Task description', blank=True, null=True)
     deadline_date = models.DateTimeField(verbose_name='Deadline')
     date_edited = models.DateTimeField(auto_now=True, verbose_name='Update Date')
-    status = models.CharField(max_length=10, verbose_name='Task Status', choices=TASK_STATUS, default='undone')
+    # status = models.CharField(max_length=10, verbose_name='Task Status', choices=TASK_STATUS, default='undone')
+    status = models.BooleanField(verbose_name='Task Status', default=False)
     # reminder = models.SmallIntegerField(choices=REMINDER_DAYS, default=1)
     reminder = models.DateTimeField(verbose_name='reminder')
 
