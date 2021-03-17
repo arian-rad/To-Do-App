@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from mysite.models import Task
 from mysite.forms import TaskCreationForm, TaskUpdateForm
 from django.urls import reverse_lazy, reverse
@@ -11,6 +10,9 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 
 
 class HomeTemplateView(TemplateView):
+    """
+    just a template view for the home page
+    """
     template_name = 'mysite/index.html'
 
 
@@ -34,6 +36,7 @@ class TaskCreateView(CreateView):
         return redirect('mysite:home')
 
 
+@method_decorator(login_required, name='dispatch')
 class TaskUpdateView(UpdateView):
     model = Task
     form_class = TaskUpdateForm
@@ -73,6 +76,19 @@ class TaskUpdateView(UpdateView):
             return HttpResponseRedirect(reverse('mysite:edit-task', args=(kwargs['slug'], (kwargs['pk']))))
 
 
+@method_decorator(login_required, name='dispatch')
 class TaskListView(ListView):
+    """
+    Only shows Undone tasks
+    """
     model = Task
     template_name = 'mysite/show_tasks.html'
+
+
+class TaskArchiveListView(ListView):
+    """
+    Shows tasks that are completed
+    """
+    model = Task
+    template_name = 'mysite/show_archive.html'
+

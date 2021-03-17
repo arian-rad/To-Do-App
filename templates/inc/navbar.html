@@ -30,11 +30,11 @@
                 Tasks
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{% url 'mysite:add-task' %}">add new task</a>
                 <a class="dropdown-item" href="{% url 'mysite:show-all-tasks' %}">my task list</a>
-                <a class="dropdown-item" href="#">deadlines</a>
+                <a class="dropdown-item" href="{% url 'mysite:add-task' %}">add new task</a>
+                <a class="dropdown-item" href="{% url 'mysite:show-archive' %}">Archive</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <a class="dropdown-item" href="#">?</a>
               </div>
             </li>
 
