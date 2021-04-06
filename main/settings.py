@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mysite.apps.MysiteConfig',
+    'members.apps.MembersConfig',
 ]
 
 LOGOUT_REDIRECT_URL = 'mysite:home'

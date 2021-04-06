@@ -1,3 +1,4 @@
 from django.contrib import admin
+from members.models import ReminderNotification
 
-# Register your models here.
+admin.site.register(ReminderNotification)
