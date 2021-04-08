@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     {% for task in object_list %}
-        {% if task.status == 'true' %}
+        {% if task.status %}
             <div class="row m-5">
   <div class="col-sm-6">
     <div class="card">
@@ -10,7 +10,7 @@
           <p class="card-text">Dead Line: {{task.deadline_date}}</p>
           <time class="card-text">Reminder: {{task.reminder}}</time>
           <br>
-          {% if task.status == 'true' %}
+          {% if task.status  %}
             <span>Done: <input class="m-3" type="checkbox" name="status" checked></span>
           {% else %}
             <span>Done: <input class="m-3" type="checkbox" name="status"></span>

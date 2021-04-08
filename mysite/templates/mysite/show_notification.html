@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% for notification in object_list %}
+
+        <div class="row m-5">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                    <span> {{notification.message}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 d-flex align-items-stretch">
+    <div class="card">
+      <div class="card-body">
+        {% if notification.task.description %}
+            <h5>Description:</h5>
+            <p class="card-title">{{notification.task.description}}</p>
+        {% else%}
+          <h5 class="card-title text-muted">No Description</h5>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+        </div>
+
+    {% endfor %}
+
+<!--    {% if messages %}-->
+<!--        <ul class="messages">-->
+<!--            {% for message in messages %}-->
+<!--                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}-->
+<!--                    <div class="alert alert-danger" role="alert">-->
+<!--                      {{ message }}-->
+<!--                    </div>-->
+<!--                {% endif %}-->
+
+<!--                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}-->
+<!--                    <div class="alert alert-success" role="alert" style="width:400px">-->
+<!--                      {{ message }}-->
+<!--                    </div>-->
+<!--                {% endif %}-->
+<!--            {% endfor %}-->
+<!--        </ul>-->
+<!--    {% endif %}-->
+{% endblock%}

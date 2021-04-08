@@ -95,19 +95,16 @@ class TaskListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(TaskListView, self).get_context_data()
-        print(Task.objects.filter(status=False).query)
-        # undone_tasks = Task.objects.filter(status=False)
-        # print(undone_tasks)
-        # for task in undone_tasks:
-        #     # if datetime.now() == task.reminder:
-        #     # print(datetime.now())
-        #     #     ReminderNotification.objects.create(
-        #     #         owner=task.user,
-        #     #         message=f'Reminding {task.title} deadline:{task.deadline_date}',
-        #     #         task=task
-        #     #     )
-        #     print(datetime.now())
-        # print(Task.objects.filter(status=True).query)
+        undone_tasks = Task.objects.filter(status=False)
+
+        for task in undone_tasks:
+            if task.reminder <= datetime.now() < task.deadline_date:
+                ReminderNotification.objects.create(
+                    owner=task.user,
+                    message=f'Reminding "{task.title}" deadline:{task.deadline_date}',
+                    task=task
+                )
+
         return context
 
 
@@ -119,3 +116,10 @@ class TaskArchiveListView(ListView):
     model = Task
     template_name = 'mysite/show_archive.html'
 
+
+class NotificationListView(ListView):
+    """
+    Shows noitifications for reminders
+    """
+    model = ReminderNotification
+    template_name = 'mysite/show_notification.html'

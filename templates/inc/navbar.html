@@ -4,7 +4,7 @@
   {% if request.user.is_authenticated %}
   <span class="navbar-brand" >{{request.user.username.title}}'s To Do List Website</span>
   {% else%}
-    <span class="navbar-brand" > To Do List Website</span>}
+    <span class="navbar-brand" > To Do List Website</span>
   {% endif %}
 
 
@@ -23,8 +23,8 @@
           </li>
       {% else %}
             <li class="nav-item active">
-            <a class="nav-link" href="{% url 'members:logout' %}">logout</a>
-          </li>
+              <a class="nav-link" href="{% url 'members:logout' %}">logout</a>
+            </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Tasks
@@ -36,6 +36,10 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">?</a>
               </div>
+            </li>
+
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'mysite:show-notification' %}">Notifications</a>
             </li>
 
       {% endif %}
