@@ -2,13 +2,13 @@ from mysite.models import Task
 from members.models import ReminderNotification
 from mysite.forms import TaskCreationForm, TaskUpdateForm
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from datetime import datetime
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 
 
 class HomeTemplateView(TemplateView):
@@ -34,6 +34,13 @@ class TaskCreateView(CreateView):
                         user=current_user, deadline_date=cd['deadline_date'],
                         reminder=cd['reminder']
                         )
+            if cd['reminder']:
+                if cd['reminder'] > cd['deadline_date']:
+                    messages.error(request, "Reminder date can't be after deadline! ")
+                    return HttpResponseRedirect(reverse('mysite:add-task', args=(kwargs['slug'], (kwargs['pk']))))
+            else:
+                messages.error(request, "You have to specify a deadline for your task")
+                return HttpResponseRedirect(reverse('mysite:add-task', args=(kwargs['slug'], (kwargs['pk']))))
             task.save()
         return redirect('mysite:home')
 
@@ -51,12 +58,6 @@ class TaskUpdateView(UpdateView):
         if task_update_form.is_valid():
             current_user = request.user
             cd = task_update_form.cleaned_data
-            # updated_task = Task(status=cd['status'], title=cd['title'], description=cd['description'],
-            #                     user=current_user, deadline_date=cd['deadline_date'],
-            #                     reminder=cd['reminder'])
-
-            print("status is:", 'status' in request.POST)
-            print("cd_status:", cd['status'])
 
             if cd['reminder']:
                 if cd['reminder'] > cd['deadline_date']:
@@ -64,11 +65,6 @@ class TaskUpdateView(UpdateView):
                     return HttpResponseRedirect(reverse('mysite:edit-task', args=(kwargs['slug'], (kwargs['pk']))))
 
             updated_task = Task.objects.get(id=kwargs['pk'])
-            # if 'status' in request.POST:
-            #     cd['status'] = True
-            updated_task.status = cd['status']
-            print('update status is: ', updated_task.status)
-
             updated_task.save()
             self.object.refresh_from_db()
 
@@ -99,11 +95,12 @@ class TaskListView(ListView):
 
         for task in undone_tasks:
             if task.reminder <= datetime.now() < task.deadline_date:
-                ReminderNotification.objects.create(
-                    owner=task.user,
-                    message=f'Reminding "{task.title}" deadline:{task.deadline_date}',
-                    task=task
-                )
+                if ReminderNotification.objects.filter(task=task).count() < 1:
+                    ReminderNotification.objects.create(
+                        owner=task.user,
+                        message=f'Reminding "{task.title}" deadline:{task.deadline_date}',
+                        task=task
+                    )
 
         return context
 
@@ -123,3 +120,16 @@ class NotificationListView(ListView):
     """
     model = ReminderNotification
     template_name = 'mysite/show_notification.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(NotificationListView, self).get_context_data()
+        not_viewed_notifications = ReminderNotification.objects.filter(owner=self.request.user, views=0)
+        context['not_viewed'] = not_viewed_notifications
+        context['object_list'] = context['object_list'][::-1]  # to show new notifications first
+
+        for notification in not_viewed_notifications:
+            if notification.views < 2:
+                notification.views += 1
+                notification.save()
+
+        return context

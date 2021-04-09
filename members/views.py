@@ -9,7 +9,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 
 class UserLoginView(LoginView):
-
     def post(self, request):
         form = LoginForm(request.POST)
         if form.is_valid():

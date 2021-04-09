@@ -1,53 +1,47 @@
 {% extends 'base.html' %}
 {% block content %}
+    {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        <div class="alert alert-danger" role="alert">
+                          {{ message }}
+                        </div>
+                    {% endif %}
 
-
-{% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                    <div class="alert alert-danger" role="alert">
-                      {{ message }}
-                    </div>
-                {% endif %}
-
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                    <div class="alert alert-success" role="alert" style="width:400px">
-                      {{ message }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </ul>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                        <div class="alert alert-success" role="alert" style="width:400px">
+                          {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </ul>
     {% endif %}
 
+        <form method='POST'>
+        {% csrf_token %}
+            <div class="container m-5"  style="width: 60rem;">
+                <div class="card border border-secondary">
+                    <div class="card-body m-5">
+                  <span>Title:</span> <input class="mt-4 ml-5" type="text" name="title" value="{{form.title.value}}">
+                  <br>
+                  <span>Deadline</span>:<input class="mt-4 ml-4" type="datetime-local" name="deadline_date" value="{{form.deadline_date.value}}"  id="id_deadline_date">
+                  <br>
+                  <span >Remind me:</span> <input class="mt-4 ml-1" type="datetime-local" name="reminder" value="2021-03-10" id="id_reminder">
+                  <br>
+                  {% if form.status.value %}
 
+                     <span> status: <button class="btn btn-primary btn-sm mt-2">Done</button> </span>
+                  {% else %}
+                    <span> status: <button class="btn btn-danger btn-sm mt-2">Undone</button> </span>
 
-
-    <form method='POST'>
-    {% csrf_token %}
-        <div class="container m-5"  style="width: 60rem;">
-        <div class="card border border-secondary">
-          <div class="card-body m-5">
-              <span>Title:</span> <input class="mt-4 ml-5" type="text" name="title" value="{{form.title.value}}">
-              <br>
-              <span>Deadline</span>:<input class="mt-4 ml-4" type="datetime-local" name="deadline_date" value="{{form.deadline_date.value}}"  id="id_deadline_date">
-              <br>
-              <span >Remind me:</span> <input class="mt-4 ml-1" type="datetime-local" name="reminder" value="2021-03-10" id="id_reminder">
-              <br>
-              {% if form.status.value == 'true' %}
-<!--                 <span>Task Status:</span>  <input class="mt-4 ml-1" type="checkbox" name="status" checked="checked">-->
-                 <span>Task Status:</span> {{form.status}}
-              {% else %}
-                Task Status: <input class="m-4" type="checkbox" name="status">
-<!--              <span class="mt-4 ml-1">Task Status:</span> <input class="mt-4 ml-1" type="checkbox" name="status">-->
-              {% endif %}
-              <br>
-              <span >Task Description: <p class="mt-2"> <textarea name="description" cols="80" rows="5" maxlength="200" id="id_description">{{form.description.value}}</textarea></p></span>
-               <input type="submit" value="update" class="btn btn-primary mt-4">
+                  {% endif %}
+                  <br>
+                  <span >Task Description: <p class="mt-2"> <textarea name="description" cols="80" rows="5" maxlength="200" id="id_description">{{form.description.value}}</textarea></p></span>
+                   <input type="submit" value="update" class="btn btn-primary mt-4">
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </form>
-
+        </form>
 
 {% endblock %}

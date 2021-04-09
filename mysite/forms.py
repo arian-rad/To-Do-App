@@ -24,7 +24,7 @@ class TaskCreationForm(forms.ModelForm):
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ('title', 'deadline_date', 'description', 'reminder', 'status')
+        fields = ('title', 'deadline_date', 'description', 'reminder',)
         labels = {
             'reminder': 'remind me'
         }
@@ -33,5 +33,4 @@ class TaskUpdateForm(forms.ModelForm):
             'deadline_date': DateInput(),
             'reminder': DateInput(),
             'description': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
-            'status': forms.CheckboxInput()
         }

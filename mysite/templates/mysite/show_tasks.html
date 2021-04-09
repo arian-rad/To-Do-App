@@ -10,12 +10,11 @@
           <p class="card-text">Dead Line: {{task.deadline_date}}</p>
           <time class="card-text">Reminder: {{task.reminder}}</time>
           <br>
-          {% comment %}{% if task.status == 'true' %}{% endcomment %}
           {% if task.status %}
-<!--            <span>Done: <input class="m-3" type="checkbox" name="status" checked></span>-->
+
             <span> status: <button class="btn btn-primary btn-sm mt-2">Done</button> </span>
           {% else %}
-<!--            <span>Done: <input class="m-3" type="checkbox" name="status"></span>-->
+
           <span> status: <button class="btn btn-danger btn-sm mt-2">Undone</button> </span>
 
           {% endif %}
