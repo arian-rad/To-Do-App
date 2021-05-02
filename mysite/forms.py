@@ -31,6 +31,7 @@ class TaskUpdateForm(forms.ModelForm):
 
         widgets = {
             'deadline_date': DateInput(),
+            # 'deadline_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'reminder': DateInput(),
             'description': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
         }

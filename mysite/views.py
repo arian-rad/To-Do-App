@@ -55,10 +55,12 @@ class TaskUpdateView(UpdateView):
     def post(self, request, *args, **kwargs):
         task_update_form = TaskUpdateForm(request.POST)
         super(TaskUpdateView, self).post(request)  # because I'm using a custom update form super() should be invoked
+
         if task_update_form.is_valid():
             current_user = request.user
             cd = task_update_form.cleaned_data
 
+            print('deadline:', cd['deadline_date'], 'type:', type(cd['deadline_date']))
             if cd['reminder']:
                 if cd['reminder'] > cd['deadline_date']:
                     messages.error(request, "Reminder date can't be after deadline! ")
@@ -66,6 +68,10 @@ class TaskUpdateView(UpdateView):
 
             updated_task = Task.objects.get(id=kwargs['pk'])
             updated_task.save()
+            related_notification = updated_task.task_reminder_notifications.get()
+            related_notification.delete()  # because we have to delete the notification related to the unedited task
+            # O.W: ReminderNotification.objects.filter(task=task).count() < 1 will be
+            # ture and new notification wont be created
             self.object.refresh_from_db()
 
             return redirect('mysite:show-all-tasks')
@@ -94,6 +100,7 @@ class TaskListView(ListView):
         undone_tasks = Task.objects.filter(status=False)
 
         for task in undone_tasks:
+            print(task.title)
             if task.reminder <= datetime.now() < task.deadline_date:
                 if ReminderNotification.objects.filter(task=task).count() < 1:
                     ReminderNotification.objects.create(
