@@ -9,6 +9,9 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView
+from django.utils.dateparse import parse_date
+from datetime import datetime
+from django.utils.formats import get_format
 
 
 class HomeTemplateView(TemplateView):
@@ -56,6 +59,9 @@ class TaskUpdateView(UpdateView):
         task_update_form = TaskUpdateForm(request.POST)
         super(TaskUpdateView, self).post(request)  # because I'm using a custom update form super() should be invoked
 
+        uncleaned_deadline_date = request.POST.get('deadline_date')
+        print("uncleaned_deadline_date:", uncleaned_deadline_date, 'type:', type(uncleaned_deadline_date))
+
         if task_update_form.is_valid():
             current_user = request.user
             cd = task_update_form.cleaned_data
@@ -76,6 +82,9 @@ class TaskUpdateView(UpdateView):
 
             return redirect('mysite:show-all-tasks')
         else:
+            if uncleaned_deadline_date != "":
+                print('uncleaned_deadline_date is empty')
+
             messages.error(request, "You have to specify a deadline for your task")
             return HttpResponseRedirect(reverse('mysite:edit-task', args=(kwargs['slug'], (kwargs['pk']))))
 

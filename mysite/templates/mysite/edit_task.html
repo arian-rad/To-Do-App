@@ -25,9 +25,9 @@
                     <div class="card-body m-5">
                   <span>Title:</span> <input class="mt-4 ml-5" type="text" name="title" value="{{form.title.value}}">
                   <br>
-                  <span>Deadline</span>:<input class="mt-4 ml-4" type="text" name="deadline_date" value="{{form.deadline_date.value}}"  id="id_deadline_date">
+                  <span>Deadline</span>:<input class="mt-4 ml-4" type="datetime-local" name="deadline_date" value="{{form.deadline_date.value | date:'c'}}"  id="id_deadline_date">
                   <br>
-                  <span >Remind me:</span> <input class="mt-4 ml-1" type="text" name="reminder" value="{{form.reminder.value}}" id="id_reminder">
+                  <span >Remind me:</span> <input class="mt-4 ml-1" type="datetime-local" name="reminder" value="{{form.reminder.value | date:'c'}}" id="id_reminder">
                   <br>
                   {% if form.status.value %}
 
@@ -46,17 +46,6 @@
 
 
 <script>
-  var deadline_date = document.getElementById('id_deadline_date')
-  deadline_date.onfocus = function (event) {
-      this.type = 'datetime-local';
-      this.focus();
-      }
-
-  var reminder_date = document.getElementById('id_reminder')
-  reminder_date.onfocus = function (event2) {
-      this.type = 'datetime-local';
-      this.focus();
-      }
 
 </script>
 
