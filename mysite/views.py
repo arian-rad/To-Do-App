@@ -7,11 +7,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from datetime import datetime
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView
-from django.utils.dateparse import parse_date
 from datetime import datetime
-from django.utils.formats import get_format
 
 
 class HomeTemplateView(TemplateView):
@@ -23,6 +20,9 @@ class HomeTemplateView(TemplateView):
 
 @method_decorator(login_required, name='dispatch')
 class TaskCreateView(CreateView):
+    """
+    A create view for the creating a task
+    """
     model = Task
     form_class = TaskCreationForm
     template_name = 'mysite/add_task.html'
@@ -50,6 +50,9 @@ class TaskCreateView(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class TaskUpdateView(UpdateView):
+    """
+    An update view for updating a task
+    """
     model = Task
     form_class = TaskUpdateForm
     template_name = 'mysite/edit_task.html'
@@ -58,9 +61,6 @@ class TaskUpdateView(UpdateView):
     def post(self, request, *args, **kwargs):
         task_update_form = TaskUpdateForm(request.POST)
         super(TaskUpdateView, self).post(request)  # because I'm using a custom update form super() should be invoked
-
-        uncleaned_deadline_date = request.POST.get('deadline_date')
-        print("uncleaned_deadline_date:", uncleaned_deadline_date, 'type:', type(uncleaned_deadline_date))
 
         if task_update_form.is_valid():
             current_user = request.user
@@ -82,14 +82,14 @@ class TaskUpdateView(UpdateView):
 
             return redirect('mysite:show-all-tasks')
         else:
-            if uncleaned_deadline_date != "":
-                print('uncleaned_deadline_date is empty')
-
             messages.error(request, "You have to specify a deadline for your task")
             return HttpResponseRedirect(reverse('mysite:edit-task', args=(kwargs['slug'], (kwargs['pk']))))
 
 
 def mark_as_completed(request, slug, pk):
+    """
+    When called, the task will be considered as a completed task
+    """
     task = Task.objects.get(id=pk, slug=slug)
     task.status = True
     task.save()
@@ -109,9 +109,12 @@ class TaskListView(ListView):
         undone_tasks = Task.objects.filter(status=False)
 
         for task in undone_tasks:
-            print(task.title)
-            if task.reminder <= datetime.now() < task.deadline_date:
-                if ReminderNotification.objects.filter(task=task).count() < 1:
+            if task.reminder <= datetime.now() < task.deadline_date:  # Checking if datetime.now has passed the
+                # task's reminder date or not. If task.reminder <= datetime.now() < task.deadline_date, it means that
+                # a notification should be created to reminder the user
+                if ReminderNotification.objects.filter(task=task).count() < 1:  # checking whether if there is
+                    # already a notification for the task. If there is, no new notification should be created. O.W:
+                    # new notification must be created
                     ReminderNotification.objects.create(
                         owner=task.user,
                         message=f'Reminding "{task.title}" deadline:{task.deadline_date}',
@@ -132,7 +135,7 @@ class TaskArchiveListView(ListView):
 
 class NotificationListView(ListView):
     """
-    Shows noitifications for reminders
+    Shows notifications for reminders
     """
     model = ReminderNotification
     template_name = 'mysite/show_notification.html'
@@ -144,7 +147,8 @@ class NotificationListView(ListView):
         context['object_list'] = context['object_list'][::-1]  # to show new notifications first
 
         for notification in not_viewed_notifications:
-            if notification.views < 2:
+            if notification.views < 2:  # checking whether the user has seen the notification or not. Because we
+                # don't want multiple notifications for a specific undone task
                 notification.views += 1
                 notification.save()
 
